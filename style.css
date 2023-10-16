@@ -1,0 +1,12 @@
+
+.contenedor {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    margin-top: 2%;
+}
+
+.card2 {
+    display: block;
+    text-align: center;
+}
