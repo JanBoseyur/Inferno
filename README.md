@@ -1,1 +1,1 @@
-# WikiPokemon
+# Inferno
