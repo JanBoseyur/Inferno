@@ -5,29 +5,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Provider as PaperProvider } from 'react-native-paper';
 
-function HomeScreen() {
-  return (
-    <View style = {{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
-
-function ProfileScreen() {
-  return (
-    <View style = {{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Profile Screen</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style = {{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings Screen</Text>
-    </View>
-  );
-}
+import HomeScreen from './src/sections/inicio';
+import SearchScreen from './src/sections/buscador';
+import NewsScreen from './src/sections/novedades';
+import RankScreen from './src/sections/rank';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -35,7 +16,6 @@ export default function App() {
   return (
     <NavigationContainer>
       <PaperProvider>
-
         <Tab.Navigator
           initialRouteName = "Home"
           activeColor = "#8f929c"
@@ -54,24 +34,33 @@ export default function App() {
 
           <Tab.Screen
             name = "Buscador"
-            component = {ProfileScreen}
+            component = {SearchScreen}
             options = {{
               tabBarLabel: 'Buscar',
-              tabBarIcon: 'account-music',
+              tabBarIcon: 'magnify',
             }}
           />
 
           <Tab.Screen
             name = "Novedades"
-            component = {SettingsScreen}
+            component = {NewsScreen}
             options = {{
               tabBarLabel: 'Novedades',
               tabBarIcon: 'bullhorn',
             }}
           />
 
+          <Tab.Screen
+            name = "Ranking"
+            component = {RankScreen}
+            options = {{
+              tabBarLabel: 'Ranking',
+              tabBarIcon: 'account-group',
+            }}
+          />
+
         </Tab.Navigator>
       </PaperProvider>
     </NavigationContainer>
-  );
+  )
 }
