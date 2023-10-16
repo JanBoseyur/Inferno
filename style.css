@@ -1,12 +1,18 @@
+.nav {
+    background-color: white;
+    align-self: center;
+    align-items: center;
+    color: black;
+}
+.logo-nav {
+    background-color: white;
+    margin: 10px;
+    width: 5%;
+}
 
 .contenedor {
     display: flex;
     text-align: center;
     align-items: center;
     margin-top: 2%;
-}
-
-.card2 {
-    display: block;
-    text-align: center;
 }
