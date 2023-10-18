@@ -1,5 +1,6 @@
 
 import * as React from 'react';
+import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -8,20 +9,20 @@ import HomeScreen from './src/sections/inicio';
 import SearchScreen from './src/sections/buscador';
 import NewsScreen from './src/sections/novedades';
 import RankScreen from './src/sections/rank';
+import ArtistPage from './src/sections/artistPage';
 
 const Tab = createMaterialBottomTabNavigator();
 
 export default function App() {
+  
   return (
-
     <NavigationContainer>
       <PaperProvider>
-
         <Tab.Navigator
           initialRouteName = "Home"
           activeColor = "#8f929c"
           inactiveColor = "white"
-            barStyle = {{ backgroundColor: '#424447' }}
+          barStyle = {{ backgroundColor: '#424447' }}
         >
 
           <Tab.Screen

@@ -1,18 +1,27 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, ImageBackground, Pressable } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ImageBackground, Pressable, Modal, Button } from 'react-native';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { SearchBar } from 'react-native-elements';
 import { db } from './firebaseConfig';
+import { useNavigation } from '@react-navigation/native';
+import ProgressBar from 'react-native-progress/Bar';
+import * as Animatable from 'react-native-animatable';
 
-const HomeScreen = () => {
-  const [artistas, setArtistas] = useState([]); // Para almacenar los datos de Firestore
-  const [searchQuery, setSearchQuery] = useState(''); // Para el valor de búsqueda
+const SearchScreen = () => {
+  const [artistas, setArtistas] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(''); 
+  const [modalVisible, setModalVisible] = useState(false);
   const [selectedArtista, setSelectedArtista] = useState(null);
 
+  const navigation = useNavigation();
+  
   useEffect(() => {
+    
     const fetchArtistasData = async () => {
+
       try {
+
         const artistasCollectionRef = collection(db, 'artistas');
         const artistasQuery = query(
           artistasCollectionRef,
@@ -43,8 +52,13 @@ const HomeScreen = () => {
   }, [searchQuery]);
 
   const openArtistaDetails = (artista) => {
-    console.log('Detalles del artista seleccionado:', artista);
     setSelectedArtista(artista);
+    setModalVisible(true);
+  };
+
+  const closeArtistaDetails = () => {
+    setModalVisible(false);
+    setSelectedArtista(null);
   };
 
 
@@ -55,7 +69,7 @@ const HomeScreen = () => {
         platform = "android"
         style = {styles.search}
         value = {searchQuery}
-        placeholder = "Buscar salas..."
+        placeholder = "Megadeth, Dio, Xentrix..."
         onChangeText = {(text) => setSearchQuery(text)}
       />
 
@@ -66,7 +80,7 @@ const HomeScreen = () => {
 
           <Pressable onPress = {() => openArtistaDetails(item)}>
 
-            <ImageBackground source = {{ uri: item.foto1 }} resizeMode="cover" style={styles.image}>
+            <ImageBackground source = {{ uri: item.foto1 }} resizeMode = "cover" style = {styles.image}>
               <View style = {styles.cuadro}>
                 
                 <View style = {{ flexDirection: 'column', alignItems: 'center', flex: 1 }}>
@@ -76,7 +90,29 @@ const HomeScreen = () => {
               </View>
             </ImageBackground>
 
+            <Modal visible = {modalVisible} transparent = {true} animationType = "fade" style = {{ margin: '100', width: 200, height: 200, borderRadius: 10, }}>
+              <View style = {styles.modalArtist}>
+
+                <ImageBackground source = {{ uri: selectedArtista ? selectedArtista.foto2 : '' }} resizeMode = "cover" style = {styles.imageArtistDetail}>
+                  <Text style = {styles.artistaDetailsTitle}>{selectedArtista ? selectedArtista.nombre : ''}</Text>
+                  <Text style = {styles.artistaDetailsRank}>{selectedArtista ? selectedArtista.rank : ''}</Text>
+                  
+                  <Animatable.View animation = "bounceInLeft" duration = {2000} iterationCount = {1}>
+                    <ProgressBar progress = {selectedArtista ? selectedArtista.rank / 100 : 0} width = {200} height = {10} color = "white" style = {{ alignSelf: 'center' }}/>
+                  </Animatable.View>
+
+                </ImageBackground>
+
+              <Text style = {styles.artistaDetailsDescription}>
+                {selectedArtista ? selectedArtista.descripcion : ''}
+              </Text>
+
+              <Button title = "Cerrar" onPress = {closeArtistaDetails} color = "#424447" style = {{ width: '10%' }}/>
+
+              </View>
+            </Modal>
           </Pressable>
+          
         )}
       />
     </View>
@@ -120,27 +156,47 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 
-  artistaDetails: {
-    backgroundColor: 'white',
+  buttonSalir: {
+    color: "#424447"
+  },
+
+  modalArtist: {
+    marginTop: '30%',
+    marginRight: '10%',
+    marginLeft: '10%',
+  },
+
+  imageArtistDetail: {
+    backgroundColor: 'black',
     padding: 16,
   },
 
   artistaDetailsTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 8,
+    color: 'white',
+    textAlign: 'center',
+    marginTop: '20%'  
+  },
+
+  artistaDetailsTitle2: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+  },
+
+  artistaDetailsRank: {
+    fontSize: 90,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginTop: '5%',  
   },
 
   artistaDetailsDescription: {
     fontSize: 16,
-    marginBottom: 16,
-  },
-
-  closeButton: {
-    backgroundColor: 'red',
-    padding: 8,
-    borderRadius: 4,
-    alignSelf: 'center',
+    borderRadius: 10
   },
 
   closeButtonText: {
@@ -150,4 +206,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default HomeScreen;
+export default SearchScreen;
