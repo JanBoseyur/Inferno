@@ -4,17 +4,14 @@ import { View, Text, FlatList, StyleSheet, ImageBackground, Pressable, Modal, Bu
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { SearchBar } from 'react-native-elements';
 import { db } from './firebaseConfig';
-import { useNavigation } from '@react-navigation/native';
-import ProgressBar from 'react-native-progress/Bar';
-import * as Animatable from 'react-native-animatable';
+
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
 
 const SearchScreen = () => {
   const [artistas, setArtistas] = useState([]);
   const [searchQuery, setSearchQuery] = useState(''); 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedArtista, setSelectedArtista] = useState(null);
-
-  const navigation = useNavigation();
   
   useEffect(() => {
     
@@ -56,22 +53,21 @@ const SearchScreen = () => {
     setModalVisible(true);
   };
 
-  const closeArtistaDetails = () => {
-    setModalVisible(false);
-    setSelectedArtista(null);
-  };
-
-
   return (
+  
     <View style = {styles.container}>
 
-      <SearchBar
-        platform = "android"
-        style = {styles.search}
-        value = {searchQuery}
-        placeholder = "Megadeth, Dio, Xentrix..."
-        onChangeText = {(text) => setSearchQuery(text)}
-      />
+      <View style = {styles.barraSearch}>
+        <SearchBar
+          platform = "android"
+          containerStyle = {styles.searchContainer} 
+          inputContainerStyle = {styles.inputContainer} 
+          inputStyle = {styles.input}
+          value = {searchQuery}
+          placeholder = "Megadeth, Dio, Xentrix..."
+          onChangeText = {(text) => setSearchQuery(text)}
+        />
+      </View>
 
       <FlatList
         data = {artistas}
@@ -86,33 +82,11 @@ const SearchScreen = () => {
                 <View style = {{ flexDirection: 'column', alignItems: 'center', flex: 1 }}>
                   <Text style = {styles.textoNombre}>{item.nombre}</Text>
                 </View>
-
+                
               </View>
             </ImageBackground>
-
-            <Modal visible = {modalVisible} transparent = {true} animationType = "fade" style = {{ margin: '100', width: 200, height: 200, borderRadius: 10, }}>
-              <View style = {styles.modalArtist}>
-
-                <ImageBackground source = {{ uri: selectedArtista ? selectedArtista.foto2 : '' }} resizeMode = "cover" style = {styles.imageArtistDetail}>
-                  <Text style = {styles.artistaDetailsTitle}>{selectedArtista ? selectedArtista.nombre : ''}</Text>
-                  <Text style = {styles.artistaDetailsRank}>{selectedArtista ? selectedArtista.rank : ''}</Text>
-                  
-                  <Animatable.View animation = "bounceInLeft" duration = {2000} iterationCount = {1}>
-                    <ProgressBar progress = {selectedArtista ? selectedArtista.rank / 100 : 0} width = {200} height = {10} color = "white" style = {{ alignSelf: 'center' }}/>
-                  </Animatable.View>
-
-                </ImageBackground>
-
-              <Text style = {styles.artistaDetailsDescription}>
-                {selectedArtista ? selectedArtista.descripcion : ''}
-              </Text>
-
-              <Button title = "Cerrar" onPress = {closeArtistaDetails} color = "#424447" style = {{ width: '10%' }}/>
-
-              </View>
-            </Modal>
+              
           </Pressable>
-          
         )}
       />
     </View>
@@ -124,6 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     textAlign: 'center',
+    backgroundColor: '#595c61'
   },
 
   title: {
@@ -134,8 +109,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  search: {
-    margin: '1%',
+  barraSearch: {
+    margin: '2%',
+    borderRadius: 20
+  },
+
+  searchContainer: {
+    borderRadius: 30, 
+    backgroundColor: 'lightgray', 
+    padding: 5, 
+    margin: 10, 
+  },
+
+  inputContainer: {
+    backgroundColor: 'white',
+    borderRadius: 40, 
+  },
+
+  input: {
+    
   },
 
   cuadro: {
@@ -161,7 +153,7 @@ const styles = StyleSheet.create({
   },
 
   modalArtist: {
-    marginTop: '30%',
+    marginTop: '15%',
     marginRight: '10%',
     marginLeft: '10%',
   },
@@ -169,6 +161,11 @@ const styles = StyleSheet.create({
   imageArtistDetail: {
     backgroundColor: 'black',
     padding: 16,
+  },
+
+  iconMusic: {
+    backgroundColor: 'black',
+    padding: 40,
   },
 
   artistaDetailsTitle: {
