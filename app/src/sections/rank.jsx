@@ -92,7 +92,8 @@ const RecursosScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    backgroundColor: '#676a6e'
   },
 
   title: {
